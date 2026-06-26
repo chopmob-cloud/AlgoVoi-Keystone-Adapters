@@ -1,0 +1,16 @@
+AlgoVoi Keystone adapters
+Copyright 2026 Christopher Hopley / AlgoVoi (chopmob-cloud)
+
+This product includes software authored by Christopher Hopley (AlgoVoi), licensed under the
+Apache License, Version 2.0.
+
+The keystone references (passport_ref, mandate_ref, policy_bound_ref, decision_ref,
+execution_ref, trust_query_ref) and the canonicalisation discipline
+(urn:x402:canonicalisation:jcs-rfc8785-v1, JCS / RFC 8785 plus SHA-256) are specified in the
+AlgoVoi IETF Internet-Drafts (draft-hopley-x402-canonicalisation-jcs-v1 and
+draft-hopley-x402-retention-chain) and documented at https://docs.algovoi.co.uk.
+
+These adapters map the keystone execution_ref into third party formats: OpenTelemetry GenAI
+semantic conventions, CloudEvents, the W3C Verifiable Credentials Data Model, and the Model
+Context Protocol. Those specifications are works of their respective authors; these adapters
+reference them and are not affiliated with or endorsed by them.

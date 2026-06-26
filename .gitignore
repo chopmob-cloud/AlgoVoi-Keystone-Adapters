@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Node
+node_modules/
+**/typescript/dist/
+
+# OS / editor
+.DS_Store
+*.swp
