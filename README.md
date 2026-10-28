@@ -24,38 +24,32 @@ Standards adapters: they carry a keystone decision into a foreign format.
 | `keystone-vc/` | `algovoi-keystone-vc` / `@algovoi/keystone-vc` | a W3C Verifiable Credential (Data Model 2.0) of type `KeystoneExecutionCredential`, with `execution_ref` as `credentialSubject.id` |
 | `keystone-mcp/` | `algovoi-keystone-mcp` / `@algovoi/keystone-mcp` | MCP tools (`keystone_execution_ref`, `keystone_verify`) so any MCP client recomputes and checks an `execution_ref` offline |
 
-## The plugins
+## The plugins live in the Keystone SDK
 
-Framework plugins: they stamp a keystone decision onto the trace metadata a framework already
-collects, so the evidence travels with the agent run. Each exposes the same contract — stamp, then
-verify by recomputation:
+The agent-framework plugins moved to
+[`chopmob-cloud/algovoi-keystone`](https://github.com/chopmob-cloud/algovoi-keystone/tree/main/plugins)
+so that all Keystone code has one home. This repository is now adapters only.
 
-| Directory | Package | Stamps onto |
-|---|---|---|
-| `plugins/algovoi-keystone-langchain/` | `algovoi-keystone-langchain` | LangChain callback handler config and run metadata |
-| `plugins/algovoi-keystone-crewai/` | `algovoi-keystone-crewai` | CrewAI step and task metadata |
-| `plugins/algovoi-keystone-autogen/` | `algovoi-keystone-autogen` | AutoGen message metadata |
-| `plugins/algovoi-keystone-adk/` | `algovoi-keystone-adk` | Google ADK agent state updates and before-agent callbacks |
+They stamp a keystone decision onto the trace metadata a framework already collects, and expose the
+same stamp-then-verify-by-recomputation contract these adapters do:
 
-All four are duck-typed and never import the framework, so a plugin installs and verifies without
-the framework present.
+| Plugin | Stamps onto |
+|---|---|
+| `algovoi-keystone-langchain` | LangChain callback handler config and run metadata |
+| `algovoi-keystone-crewai` | CrewAI step and task metadata |
+| `algovoi-keystone-autogen` | AutoGen message metadata |
+| `algovoi-keystone-adk` | Google ADK agent state updates and before-agent callbacks |
 
-```python
-from algovoi_keystone_langchain import keystone_trace_metadata, verify_trace_execution_ref
-
-meta = keystone_trace_metadata(
-    decision_ref="dec_01", action_type="transfer", scope="acct_42",
-    outcome="ALLOW", executed_at_ms=1700000000000,
-)
-verify_trace_execution_ref(meta)   # True — recomputed, not trusted
+```
+pip install --index-url https://pip.algovoi.co.uk/simple/ algovoi-keystone-langchain
 ```
 
-### Not included here
+### Not open, not included
 
 The `*-journey` packages (`a2a-journey`, `autogen-journey`, `crewai-journey`,
-`langgraph-journey`) are **commercial, bundle-only** and are not part of this open repository.
-`crewai-journey` currently carries no licence field in its metadata; it is commercial by intent
-and must not be treated as open. They bind a whole multi-agent run into one `journey_ref` — the
+`langgraph-journey`) are **commercial, bundle-only** and live in neither repository.
+`crewai-journey` carries no licence field in its metadata at all; it is commercial by intent and
+must not be treated as open. They bind a whole multi-agent run into one `journey_ref` — the
 orchestrator capability — rather than a single step.
 
 ## Install
@@ -75,13 +69,13 @@ dependencies.
 
 ```
 pip install pytest
-pytest tests                        # shared plugin contract, parametrised over all four
 pytest otel-genai/python/tests      # adapter tamper-evidence
 ```
 
-The suite is adversarial, not a smoke test. For every package it proves a genuine payload
+The suite is adversarial, not a smoke test. For every adapter it proves a genuine payload
 verifies, a tampered preimage is refused, empty or malformed input fails closed, and a valid
-`execution_ref` **copied from a different span** does not authenticate this one.
+`execution_ref` **copied from a different span** does not authenticate this one. The plugin
+contract tests live with the plugins in the Keystone SDK repository.
 
 ## Design
 
